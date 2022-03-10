@@ -18,7 +18,7 @@ public class UsuarioService {
 	@Autowired
 	private UsuarioRepository repository;
 
-    public Usuario CadastrarUsuario(Usuario usuario) {
+    public Optional<Usuario> CadastrarUsuario(Usuario usuario) {
     	
    BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
    
@@ -26,7 +26,7 @@ public class UsuarioService {
   String senhaEncoder = encoder.encode(usuario.getSenha());
   usuario.setSenha(senhaEncoder);
     
-  return repository.save(usuario);
+  return Optional.of(repository.save(usuario)); 
     }
 
     public Optional<UserLogin> logar(Optional<UserLogin> user){
@@ -38,7 +38,7 @@ public class UsuarioService {
     		
     	String auth = user.get().getUsuario() + ":" + user.get().getSenha();
     	byte[] encodeAuth = Base64.encodeBase64(auth.getBytes(Charset.forName("US-ASCII")));
-    		String authHeader = "Basic" + new String (encodeAuth);
+    		String authHeader = "Basic " + new String (encodeAuth);
     		
     		user.get().setToken(authHeader);
     		user.get().setNome(usuario.get().getNome());

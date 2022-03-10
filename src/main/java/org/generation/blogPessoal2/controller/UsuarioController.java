@@ -2,6 +2,8 @@ package org.generation.blogPessoal2.controller;
 
 import java.util.Optional;
 
+import javax.validation.Valid;
+
 import org.generation.blogPessoal2.model.UserLogin;
 import org.generation.blogPessoal2.model.Usuario;
 import org.generation.blogPessoal2.service.UsuarioService;
@@ -31,8 +33,9 @@ public class UsuarioController {
 	}
 
     @PostMapping("/cadastrar")
-    public ResponseEntity<Usuario> Post(@RequestBody Usuario usuario){
-    	return ResponseEntity.status(HttpStatus.CREATED)
-    			.body(usuarioService.CadastrarUsuario(usuario));
+    public ResponseEntity<Usuario> Post(@Valid @RequestBody Usuario usuario){
+    	return usuarioService.CadastrarUsuario(usuario)
+    			.map(resposta -> ResponseEntity.status(HttpStatus.CREATED).body(resposta))
+    			.orElse(ResponseEntity.status(HttpStatus.BAD_REQUEST).build());
     }
 }

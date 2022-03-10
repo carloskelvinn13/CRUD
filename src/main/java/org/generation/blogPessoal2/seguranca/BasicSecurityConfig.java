@@ -10,7 +10,7 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.web.util.matcher.AnyRequestMatcher;
+
 
 @EnableWebSecurity
 public class BasicSecurityConfig extends WebSecurityConfigurerAdapter {
@@ -23,7 +23,12 @@ public class BasicSecurityConfig extends WebSecurityConfigurerAdapter {
 	protected void configure(AuthenticationManagerBuilder auth)  throws Exception{
     
 		auth.userDetailsService(userDetailService);
+	    auth.inMemoryAuthentication()
+	    .withUser("root")
+	    .password(PasswordEncoder().encode("CK@131293"))
+	    .authorities("ROLE_USER");
 	}
+	
     @Bean
 public PasswordEncoder PasswordEncoder() {
     return new BCryptPasswordEncoder();
@@ -33,7 +38,7 @@ public PasswordEncoder PasswordEncoder() {
     protected void configure(HttpSecurity http) throws Exception {
     	http.authorizeHttpRequests()
     	.antMatchers("/usuarios/logar").permitAll()
-    	.antMatchers("/usuarios/logar").permitAll()
+    	.antMatchers("/usuarios/cadastrar").permitAll()
         .anyRequest().authenticated()
         .and().httpBasic()
         .and().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
